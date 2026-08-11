@@ -15,6 +15,13 @@ datasource db {
   url      = env("DATABASE_URL")
   extensions = [vector]
 }
+ 
+enum EventStatus {
+  REGISTERED
+  CHECKED_IN
+  CANCELLED
+  NO_SHOW
+}
 
 model User {
   id Int @id @default(autoincrement())
@@ -76,6 +83,12 @@ model Event {
 model UserEvent {
   userId  Int
   eventId Int
+
+  status  EventStatus @default(REGISTERED)
+  qrToken String? @unique
+
+  registered_at DateTime  @default(now())
+  checked_in_at DateTime?
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
