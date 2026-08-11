@@ -59,6 +59,7 @@ model Event {
   bannerUrl    String?
 
   // Event timing
+  checkInStartsAt DateTime?
   startsAt DateTime
   endsAt   DateTime?
 
