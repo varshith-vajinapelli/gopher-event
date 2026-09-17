@@ -10,15 +10,27 @@ async function exists(userId, eventId) {
     })
     return !!record
 }
-
-async function createRegistration(userId, eventId) {
+// TODO: Still need to complete? QrToken is optional right?
+async function createRegistration(userId, eventId, qrToken) {
     return prisma.userEvent.create({
         data: {
-            userId, eventId
+            userId, eventId, qrToken, status: prisma.RsvpStatus.REGISTERED
         }
     })
 
 }
+
+// Ownership
+/*
+async function checkin(qrToken) {
+    return prisma.userEvent.findUnique({
+        where: { qrToken },
+        include: {
+            event: true
+        }
+    })
+}
+*/
 
 module.exports = {
     exists,

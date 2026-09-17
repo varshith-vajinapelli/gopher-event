@@ -16,7 +16,7 @@ datasource db {
   extensions = [vector]
 }
  
-enum EventStatus {
+enum RsvpStatus {
   REGISTERED
   CHECKED_IN
   CANCELLED
@@ -85,7 +85,7 @@ model UserEvent {
   userId  Int
   eventId Int
 
-  status  EventStatus @default(REGISTERED)
+  status  RsvpStatus @default(REGISTERED)
   qrToken String? @unique
 
   registered_at DateTime  @default(now())

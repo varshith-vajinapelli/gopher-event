@@ -10,6 +10,9 @@ router.get('/:publicId', eventController.getEventByPublicId)
 
 router.post('/', authMiddleware, requireOrganizer, eventController.createEvent)
 
+//router.post('/checkin', authMiddleware, requireOrganizer, eventController.checkIn)
+
+
 router.put('/:publicId', authMiddleware, eventController.updateEvent)
 
 router.post('/:publicId/rsvp', authMiddleware, eventController.registerUserForEvent)

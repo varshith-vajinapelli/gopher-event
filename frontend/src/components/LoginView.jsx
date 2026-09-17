@@ -1,0 +1,27 @@
+import { Link } from "react-router-dom";
+
+const LoginView = ({ email, password, isLoading, onEmailChange, onPasswordChange, onSubmit }) => (
+  <div className="auth-page min-h-screen flex items-center justify-center px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+    <div className="w-full max-w-5xl">
+      <div className="auth-card login-card rounded-2xl overflow-hidden">
+        <div className="auth-brand px-8 py-8 text-center">
+          <div className="mx-auto h-14 w-14 bg-white rounded-xl flex items-center justify-center shadow-lg mb-3"><span className="text-[#7a0019] font-bold text-xl">M</span></div>
+          <h2 className="font-sans text-xl font-bold text-white">Gopher Event</h2>
+          <p className="mt-1 text-[#ffcc33] text-xs font-semibold uppercase tracking-wider">Discover what&apos;s happening</p>
+          <p className="auth-brand-note">Discover campus life, one event at a time.</p>
+        </div>
+        <div className="px-8 py-8">
+          <div className="auth-form-heading"><p className="auth-form-kicker">Welcome back</p><h1>Sign in to Gopher Event</h1><p>Find your next campus moment.</p></div>
+          <form className="space-y-5" onSubmit={onSubmit}>
+            <div><label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1.5">University Email</label><div className="relative"><div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" /></svg></div><input id="email" name="email" type="email" placeholder="x500@umn.edu" className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7a0019] focus:border-[#7a0019] transition-colors sm:text-sm" onChange={(event) => onEmailChange(event.target.value)} value={email} required /></div></div>
+            <div><label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label><div className="relative"><div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 00-2-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg></div><input id="password" name="password" type="password" placeholder="Enter your password" className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7a0019] focus:border-[#7a0019] transition-colors sm:text-sm" onChange={(event) => onPasswordChange(event.target.value)} value={password} required /></div></div>
+            <button disabled={isLoading} type="submit" className="w-full py-2.5 px-4 rounded-lg text-sm font-bold text-white bg-[#7a0019] hover:bg-[#5a0012] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7a0019] transition-colors">{isLoading ? "Logging in..." : "Login"}</button>
+          </form>
+          <p className="auth-account-link text-center text-sm text-ink-soft">New to Gopher Event? <Link to="/signup" className="font-semibold text-maroon">Create an account</Link></p>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+export default LoginView;

@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @source "./**/*.{js,jsx}";
-
 /* Aliases onto the GopherEvents palette defined in styles/global.css (:root),
    so app-wide components can opt into it via plain utility classes
    (bg-cream, text-maroon, font-display, ...) instead of arbitrary values. */
@@ -14,7 +13,6 @@
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
   --color-line: var(--line);
-
   --font-display: 'Fraunces', serif;
   --font-mono: 'IBM Plex Mono', monospace;
 }

@@ -108,10 +108,26 @@ async function registerUserForEvent(req, res) {
     }
 }
 
+/*
+async function checkIn(req, res) {
+
+    const result = eventSchema.qrTokenSchema.safeParse(req.body)
+
+    if (!result.success) {
+        return res.status(400).json({ success: false, message: 'Invalid QR token format.' })
+    }
+
+    const { qrToken } = result.data
+
+    const scannerUserId = req.user.userId
+    eventService.checkIn(qrToken, scannerUserId)
+
+}
+*/
 module.exports = {
     createEvent,
     updateEvent,
     getEvents,
     getEventByPublicId,
-    registerUserForEvent
+    registerUserForEvent,
 }

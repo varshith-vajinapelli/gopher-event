@@ -1,5 +1,7 @@
+const { check } = require('zod')
 const eventRepo = require('../repositories/event.repo')
 const userEventRepo = require('../repositories/userEvent.repo')
+const { generateQrToken } = require("../utils/qr.utils")
 
 async function createEvent(eventData) {
     return eventRepo.createEvent(eventData)
@@ -34,7 +36,8 @@ async function registerUserForEvent({ userId, publicId }) {
         throw err
     }
     try {
-        const result = await userEventRepo.createRegistration(userId, event.id)
+        const qrToken = generateQrToken()
+        const result = await userEventRepo.createRegistration(userId, event.id, qrToken)
         return { ...result, event }
 
     } catch (err) {
@@ -48,10 +51,47 @@ async function registerUserForEvent({ userId, publicId }) {
 
 }
 
+/*
+async function checkin(qrToken, scannerUserId) {
+    const record = await prisma.userEventRepo(qrToken)
+
+    if (!record) {
+        const err = new Error('Invalid QR token')
+        err.code = 'INVALID_QR_TOKEN'
+        throw err
+    }
+
+    if (scannerUserId !== record.event.creatorId) {
+        // Scanner is not the owner/organizer of this event
+        const err = new Error('You are not authorized to check in attendees for this event');
+        err.status = 403;
+        err.code = 'UNAUTHORIZED_SCANNER';
+        throw err;
+    }
+
+    const now = new Date()
+
+    if (now < event.checkInStartsAt) {
+        const err = new Error('Check-in has not started yet');
+        err.status = 400;
+        err.code = 'CHECKIN_NOT_STARTED';
+        throw err;
+    }
+
+    // Check if the event has ALREADY ended
+    if (now > event.endsAt) {
+        const err = new Error('Event has already ended');
+        err.status = 400;
+        err.code = 'EVENT_ENDED';
+        throw err;
+    }
+}
+*/
+
 module.exports = {
     createEvent,
     updateEvent,
     getEvents,
     getEventByPublicId,
-    registerUserForEvent
+    registerUserForEvent,
 }

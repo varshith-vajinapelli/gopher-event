@@ -162,4 +162,3 @@ module.exports = {
     sendVerificationOtp,
     verifyUserOtp
 }
-

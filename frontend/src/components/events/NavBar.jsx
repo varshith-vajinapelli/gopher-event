@@ -1,51 +1,12 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import api from "../../api/axios";
 import { useToast } from "../../context/ToastContext";
-
-const searchPlaceholders = [
-  "stress-buster events this week",
-  "free food on campus today",
-  "networking events for CS majors",
-  "study groups near Coffman Union",
-  "hackathons happening this month",
-  "career fairs before December",
-  "international student mixers",
-  "outdoor events this weekend",
-  "workshops on resume building",
-  "events with free swag",
-  "club meetings tonight",
-  "research talks in Keller Hall",
-];
 
 const NavBar = ({ setEvents, setLoading }) => {
   const [input, setInput] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [exampleIndex, setExampleIndex] = useState(0);
-  const [typedLength, setTypedLength] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
   const { showToast } = useToast();
-
-  useEffect(() => {
-    const example = searchPlaceholders[exampleIndex];
-    const isComplete = typedLength === example.length;
-    const delay = isComplete && !isDeleting ? 1600 : isDeleting ? 35 : 60;
-
-    const timeoutId = setTimeout(() => {
-      if (!isDeleting && !isComplete) {
-        setTypedLength((length) => length + 1);
-      } else if (!isDeleting) {
-        setIsDeleting(true);
-      } else if (typedLength > 0) {
-        setTypedLength((length) => length - 1);
-      } else {
-        setExampleIndex((index) => (index + 1) % searchPlaceholders.length);
-        setIsDeleting(false);
-      }
-    }, delay);
-
-    return () => clearTimeout(timeoutId);
-  }, [exampleIndex, isDeleting, typedLength]);
 
   const handleSearch = async (event) => {
     event.preventDefault();
@@ -85,7 +46,7 @@ const NavBar = ({ setEvents, setLoading }) => {
               value={input}
               disabled={isSearching}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={`${searchPlaceholders[exampleIndex].slice(0, typedLength)}`}
+              placeholder="Search free food, events near Coffman, workshops..."
               aria-label="Search events by topic, description, or location"
               className="block w-full h-10 pl-4 pr-10 bg-paper border border-line rounded-full text-sm text-ink placeholder-ink-soft/70 focus:outline-none focus:ring-2 focus:ring-maroon/20 focus:border-maroon transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             />

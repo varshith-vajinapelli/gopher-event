@@ -19,28 +19,26 @@ function authMiddleware(req, res, next) {
         req.user = {
             userId: payload.userId,
             email: payload.email,
+            isOrganizer: payload.isOrganizer
         };
 
         next();
     } catch (err) {
         return res.status(401).json({
             success: false,
-            code: err.name === 'TokenExpiredError' ? 'TOKEN_EXPIRED' : 'INVALID_TOKEN',
-            message: err.name === 'TokenExpiredError'
-                ? 'Your session has expired. Please log in again.'
-                : 'Your session is no longer valid. Please log in again.',
+            message: 'Invalid or expired token',
         });
     }
 }
 
 async function requireOrganizer(req, res, next) {
     try {
-        const user = await userRepo.findByEmail(req.user.email);
+        const { isOrganizer } = req.user;
 
-        if (!user || !user.isOrganizer) {
+        if (!isOrganizer) {
             return res.status(403).json({
                 success: false,
-                message: 'Only organizers can create events',
+                message: 'Organizer access is required.',
             });
         }
 

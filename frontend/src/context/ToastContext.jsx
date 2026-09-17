@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useState } from "react";
 import Toast from "../components/ToastNotification";
 
 const ToastContext = createContext(null);
@@ -6,13 +6,13 @@ const ToastContext = createContext(null);
 export const ToastProvider = ({ children }) => {
   const [toast, setToast] = useState(null);
 
-  const showToast = useCallback((type, message) => {
+  const showToast = (type, message) => {
     setToast({ type, message });
-  }, []);
+  };
 
-  const clearToast = useCallback(() => {
+  const clearToast = () => {
     setToast(null);
-  }, []);
+  };
 
   return (
     <ToastContext.Provider value={{ showToast }}>
@@ -24,4 +24,6 @@ export const ToastProvider = ({ children }) => {
   );
 };
 
+// This hook is intentionally exported with the provider so consumers share one context.
+// eslint-disable-next-line react-refresh/only-export-components
 export const useToast = () => useContext(ToastContext);

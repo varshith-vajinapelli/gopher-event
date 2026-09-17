@@ -1,3 +1,8 @@
+/*
+TODO (security): Rate limiting is intentionally disabled for now.
+Nothing imports this file while it is disabled. Uncomment this file and the
+middleware lines in routes/auth.routes.js when you decide on the limits.
+
 const rateLimit = require('express-rate-limit');
 const { ipKeyGenerator } = require('express-rate-limit');
 
@@ -33,3 +38,4 @@ const verifyOtpLimiter = rateLimit({
 module.exports = {
     loginLimiter, signupLimiter, verifyOtpLimiter
 }
+*/

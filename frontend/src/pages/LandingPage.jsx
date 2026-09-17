@@ -1,25 +1,7 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./LandingPage.css";
 
 const LandingPage = () => {
-  useEffect(() => {
-    const revealEls = document.querySelectorAll(".reveal");
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("in-view");
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
-    revealEls.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
-
   return (
     <div className="landing-page">
       <header>

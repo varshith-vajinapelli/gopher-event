@@ -20,6 +20,11 @@ const createEvent = z.object({
         .min(3, 'Venue should be more than 2 characters')
         .max(254, 'Venue should be less than 255 characters'),
 
+    capacity: z
+        .number()
+        .int('Capacity must be a whole number')
+        .min(1, 'Capacity must be at least 1'),
+
     thumbnailUrl: z.string().url(),
 
     bannerUrl: z.string().url().optional().nullable(),
@@ -47,6 +52,15 @@ const createEvent = z.object({
 const EventPublicIdParamSchema = z.object({
     publicId: z.uuid()
 })
+
+/*
+const qrTokenSchema = z.object({
+    qrToken: z.string()
+        .length(6, "Qr token must be exactly 6 characters long")
+        .regex(/^[A-Z0-9]+$/, "Qr token must contain only upper case letters and numbers")
+})
+*/
+
 module.exports = {
     createEvent, EventPublicIdParamSchema
 }

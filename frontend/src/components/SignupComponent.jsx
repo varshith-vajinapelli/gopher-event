@@ -20,20 +20,20 @@ const SignUpComponenet = ({
         setLoading(true)
 
         try{
-            const result = await api.post("/auth/signup",{
+            await api.post("/auth/signup",{
                 firstName,lastName,email,password
             })
             // token saved to the local storage
 
             showToast("success", "Verification code sent to your email!")
-            setLoading(false)
             navigate("/verify-email", {state:{email}})
 
         } catch(error){
-            setLoading(false)
             const errorMessage = error.response?.data?.message ?? "Something went wrong"
 
             showToast("error", errorMessage)
+        } finally {
+            setLoading(false)
         }
 
     }
