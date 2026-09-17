@@ -8,11 +8,13 @@ import EventsPage from "./pages/EventsPage";
 import CreateEvent from "./pages/CreateEvent";
 import EventDetailPage from "./pages/EventDetailPage";
 import LandingPage from "./pages/LandingPage";
+import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => {
   return (
     <ToastProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<LandingPage/>} />
           {/* Authentication Routes */}
