@@ -94,13 +94,27 @@ async function registerUserForEvent(req, res) {
 
         if (error) console.error('Error sending email', error)
 
-        return res.status(201).json({ success: true, message: 'Registered for event' })
+        return res.status(201).json({
+            success: true,
+            message: 'Registered for event',
+            registration: {
+                publicId: registration.event.publicId,
+                status: registration.status,
+                qrToken: registration.qrToken,
+                registeredAt: registration.registered_at
+            },
+            totalRSVPs: registration.totalRSVPs
+        })
     } catch (error) {
         if (error.code === 'EVENT_NOT_FOUND') {
             return res.status(404).json({ success: false, message: error.message })
         }
 
         if (error.code === 'ALREADY_REGISTERED') {
+            return res.status(409).json({ success: false, message: error.message })
+        }
+
+        if (error.code === 'EVENT_STARTED' || error.code === 'EVENT_FULL') {
             return res.status(409).json({ success: false, message: error.message })
         }
 

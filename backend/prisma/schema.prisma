@@ -67,7 +67,7 @@ model Event {
   createdAt DateTime @default(now())
 
   // Rsvp & Capacity
-  totalRSVPs Int  @default(50)
+  totalRSVPs Int  @default(0)
   capacity Int  @default(0)
 
   // Ownership

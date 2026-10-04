@@ -5,7 +5,7 @@ import EventCreator from "./eventDetail/EventCreator";
 import EventActions from "./eventDetail/EventActions";
 import { Link } from "react-router-dom";
 
-const EventDetailView = ({ details, publicId }) => (
+const EventDetailView = ({ details, publicId, onRsvpSuccess }) => (
   <div className="min-h-screen bg-cream">
     <nav className="event-detail-nav" aria-label="Event navigation">
       <div className="event-detail-nav-inner">
@@ -26,7 +26,7 @@ const EventDetailView = ({ details, publicId }) => (
           <EventCreator firstName={details.creator.firstName} lastName={details.creator.lastName} />
         </div>
         <div className="lg:col-span-1"><div className="sticky top-8">
-          <EventActions publicId={publicId} totalRSVPs={details.totalRSVPs} capacity={details.capacity} />
+          <EventActions publicId={publicId} totalRSVPs={details.totalRSVPs} capacity={details.capacity} startsAt={details.startsAt} onRsvpSuccess={onRsvpSuccess} />
         </div></div>
       </div>
     </div>

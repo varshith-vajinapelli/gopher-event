@@ -53,13 +53,22 @@ Returns `200` with the updated event, `400` for invalid input or ID, and `404` w
 
 Registers the authenticated user for an event. The request body is empty.
 
+RSVP closes at the event start time or when `totalRSVPs` reaches `capacity`. Registration creation and the count increment use one Prisma nested write. Capacity is checked before the write; concurrent requests can still exceed capacity.
+
 **Success: `201`**
 
 ```json
 {
   "success": true,
-  "message": "Registered for event"
+  "message": "Registered for event",
+  "registration": {
+    "publicId": "550e8400-e29b-41d4-a716-446655440000",
+    "status": "REGISTERED",
+    "qrToken": "A1B2C3",
+    "registeredAt": "2026-10-04T18:00:00.000Z"
+  },
+  "totalRSVPs": 1
 }
 ```
 
-Returns `400` for an invalid UUID, `401` for missing/invalid authentication, `404` when the event does not exist, and `409` when the user is already registered.
+Returns `400` for an invalid UUID, `401` for missing/invalid authentication, `404` when the event does not exist, and `409` when the user is already registered, the event has started, or the event is full.

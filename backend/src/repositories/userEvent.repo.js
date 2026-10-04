@@ -10,14 +10,33 @@ async function exists(userId, eventId) {
     })
     return !!record
 }
-// TODO: Still need to complete? QrToken is optional right?
 async function createRegistration(userId, eventId, qrToken) {
-    return prisma.userEvent.create({
+    const event = await prisma.event.update({
+        where: { id: eventId },
         data: {
-            userId, eventId, qrToken, status: prisma.RsvpStatus.REGISTERED
+            totalRSVPs: { increment: 1 },
+            userLinks: {
+                create: {
+                    userId,
+                    qrToken,
+                    status: prisma.RsvpStatus.REGISTERED
+                }
+            }
+        },
+        select: {
+            totalRSVPs: true,
+            userLinks: {
+                where: { userId },
+                select: {
+                    status: true,
+                    qrToken: true,
+                    registered_at: true
+                }
+            }
         }
     })
 
+    return { ...event.userLinks[0], totalRSVPs: event.totalRSVPs }
 }
 
 // Ownership

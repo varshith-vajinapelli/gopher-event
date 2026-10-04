@@ -4,12 +4,31 @@ import api from "../../api/axios";
 import { useToast } from "../../context/ToastContext";
 import CapacityDisplay from "../../pages/CapacityDisplay";
 
-const EventActions = ({ publicId, capacity, totalRSVPs }) => {
+const EventActions = ({ publicId, capacity, totalRSVPs, startsAt, onRsvpSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [rsvp, setRsvp] = useState(false);
   const { showToast } = useToast();
+
+  const eventStarted = new Date() >= new Date(startsAt);
+  const eventFull = totalRSVPs >= capacity;
+  let closedMessage = "";
+  if (eventStarted) {
+    closedMessage = "RSVP closed";
+  } else if (eventFull) {
+    closedMessage = "Event full";
+  }
   
   async function handleRsvp() {
+    if (loading || rsvp) return;
+    if (new Date() >= new Date(startsAt)) {
+      showToast("error", "RSVP is closed because the event has started");
+      return;
+    }
+    if (eventFull) {
+      showToast("error", "Event has reached capacity");
+      return;
+    }
+
     setLoading(true);
     try {
       const result = await api.post(
@@ -18,6 +37,7 @@ const EventActions = ({ publicId, capacity, totalRSVPs }) => {
       );
       if (result.data.success) {
         setRsvp(true);
+        onRsvpSuccess(result.data.totalRSVPs);
         showToast("success", "RSVP confirmed!");
       }
     } catch (error) {
@@ -42,7 +62,7 @@ const EventActions = ({ publicId, capacity, totalRSVPs }) => {
 
         <button
           onClick={handleRsvp}
-          disabled={loading || rsvp}
+          disabled={loading || rsvp || eventStarted || eventFull}
           className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold text-white transition-all shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0
             ${rsvp
               ? "bg-green-600 hover:bg-green-700 focus:ring-green-600"
@@ -61,6 +81,8 @@ const EventActions = ({ publicId, capacity, totalRSVPs }) => {
               </svg>
               You're Going!
             </>
+          ) : closedMessage ? (
+            closedMessage
           ) : (
             <>
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

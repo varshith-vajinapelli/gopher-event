@@ -1,4 +1,3 @@
-const { check } = require('zod')
 const eventRepo = require('../repositories/event.repo')
 const userEventRepo = require('../repositories/userEvent.repo')
 const { generateQrToken } = require("../utils/qr.utils")
@@ -35,6 +34,19 @@ async function registerUserForEvent({ userId, publicId }) {
         err.code = 'ALREADY_REGISTERED'
         throw err
     }
+
+    if (new Date() >= new Date(event.startsAt)) {
+        const err = new Error('RSVP is closed because the event has started')
+        err.code = 'EVENT_STARTED'
+        throw err
+    }
+
+    if (event.totalRSVPs >= event.capacity) {
+        const err = new Error('Event has reached capacity')
+        err.code = 'EVENT_FULL'
+        throw err
+    }
+
     try {
         const qrToken = generateQrToken()
         const result = await userEventRepo.createRegistration(userId, event.id, qrToken)

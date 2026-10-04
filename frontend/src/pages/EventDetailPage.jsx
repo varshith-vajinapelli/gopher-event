@@ -24,9 +24,13 @@ const EventDetailPage = () => {
     fetchEvent();
   }, [publicId]);
 
+  function handleRsvpSuccess(totalRSVPs) {
+    setDetails((currentDetails) => ({ ...currentDetails, totalRSVPs }));
+  }
+
   if (error) return <div>Something went wrong</div>;
   if (loading) return <EventDetailLoader />;
-  return <EventDetailView details={details} publicId={publicId} />;
+  return <EventDetailView details={details} publicId={publicId} onRsvpSuccess={handleRsvpSuccess} />;
 };
 
 export default EventDetailPage;
