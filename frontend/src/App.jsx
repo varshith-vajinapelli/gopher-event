@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 
 import { ToastProvider } from "./context/ToastContext";
 import SignupPage from "./pages/SignupPage";
@@ -10,6 +10,14 @@ import EventDetailPage from "./pages/EventDetailPage";
 import LandingPage from "./pages/LandingPage";
 import ScrollToTop from "./components/ScrollToTop";
 
+const LoggedOutOnly = () => {
+  if (localStorage.getItem("token")) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Outlet />;
+};
+
 const App = () => {
   return (
     <ToastProvider>
@@ -18,9 +26,11 @@ const App = () => {
         <Routes>
           <Route path="/" element={<LandingPage/>} />
           {/* Authentication Routes */}
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route element={<LoggedOutOnly />}>
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/login" element={<LoginPage />} />
+          </Route>
 
           {/* Core Event Routes */}
           <Route path="/events" element={<EventsPage />} />

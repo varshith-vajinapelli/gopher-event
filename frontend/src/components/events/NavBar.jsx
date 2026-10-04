@@ -12,6 +12,7 @@ const searchPrompts = [
 ];
 
 const NavBar = ({ setResults, setLoading }) => {
+  const isLoggedIn = Boolean(localStorage.getItem("token"));
   const [input, setInput] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -121,6 +122,8 @@ const NavBar = ({ setResults, setLoading }) => {
 
         {/* Avatar — pushed to far right via ml-auto */}
         <nav className="ml-auto flex items-center gap-2 sm:gap-4" aria-label="Account actions">
+          {!isLoggedIn && (
+          <>
           <Link
             to="/login"
             className="hidden text-sm font-medium text-ink-soft transition-colors hover:text-maroon sm:inline"
@@ -133,6 +136,8 @@ const NavBar = ({ setResults, setLoading }) => {
           >
             Sign up
           </Link>
+          </>
+          )}
           <Link
             to="/events/create"
             className="inline-flex h-10 items-center justify-center rounded-lg bg-maroon px-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-maroon-dark sm:px-4"
