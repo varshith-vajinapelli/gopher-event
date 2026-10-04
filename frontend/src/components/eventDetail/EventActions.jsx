@@ -41,7 +41,9 @@ const EventActions = ({ publicId, capacity, totalRSVPs, startsAt, onRsvpSuccess 
         showToast("success", "RSVP confirmed!");
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message ?? "Failed to RSVP";
+      const errorMessage = error.response?.status === 401
+        ? "Please log in to RSVP."
+        : error.response?.data?.message ?? "Failed to RSVP";
       showToast("error", errorMessage);
     } finally {
       setLoading(false);
