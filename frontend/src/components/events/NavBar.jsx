@@ -1,20 +1,68 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../../api/axios";
 import { useToast } from "../../context/ToastContext";
 
-const NavBar = ({ setEvents, setLoading }) => {
+const searchPrompts = [
+  "Describe any event you want...",
+  "Free food at Coffman...",
+  "Competitive hackathons on campus...",
+  "A beginner-friendly painting workshop...",
+  "Somewhere to play volleyball...",
+];
+
+const NavBar = ({ setResults, setLoading }) => {
   const [input, setInput] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [placeholder, setPlaceholder] = useState(searchPrompts[0]);
   const { showToast } = useToast();
+
+  useEffect(() => {
+    if (input || isFocused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let promptIndex = 0;
+    let characterCount = searchPrompts[0].length;
+    let deleting = true;
+    let timer;
+
+    function typePrompt() {
+      const prompt = searchPrompts[promptIndex];
+      let delay = 80;
+
+      if (deleting) {
+        characterCount -= 1;
+        delay = 35;
+      } else {
+        characterCount += 1;
+      }
+
+      setPlaceholder(prompt.slice(0, characterCount));
+
+      if (characterCount === 0) {
+        promptIndex = (promptIndex + 1) % searchPrompts.length;
+        deleting = false;
+        delay = 300;
+      } else if (characterCount === prompt.length) {
+        deleting = true;
+        delay = 1800;
+      }
+
+      timer = window.setTimeout(typePrompt, delay);
+    }
+
+    timer = window.setTimeout(typePrompt, 1800);
+    return () => window.clearTimeout(timer);
+  }, [input, isFocused]);
 
   const handleSearch = async (event) => {
     event.preventDefault();
     setIsSearching(true);
     setLoading(true);
     try {
-      const result = await api.get("/events", { params: { search: input } });
-      setEvents(result.data.events);
+      const search = input.trim();
+      const result = await api.get("/events", { params: { search } });
+      setResults({ exactResults: result.data.exactResults, semanticResults: result.data.semanticResults, search });
     } catch (error) {
       const errorMessage = error.response?.data?.message ?? "Failed to search events";
       showToast("error", errorMessage);
@@ -46,8 +94,10 @@ const NavBar = ({ setEvents, setLoading }) => {
               value={input}
               disabled={isSearching}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Search free food, events near Coffman, workshops..."
-              aria-label="Search events by topic, description, or location"
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              placeholder={isFocused ? searchPrompts[0] : placeholder}
+              aria-label="Describe the events you want to find, such as free food at Coffman or competitive hackathons"
               className="block w-full h-10 pl-4 pr-10 bg-paper border border-line rounded-full text-sm text-ink placeholder-ink-soft/70 focus:outline-none focus:ring-2 focus:ring-maroon/20 focus:border-maroon transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <button

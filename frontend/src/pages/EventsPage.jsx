@@ -4,7 +4,7 @@ import EventsView from "../components/EventsView";
 import { useToast } from "../context/ToastContext";
 
 const EventsPage = () => {
-  const [events, setEvents] = useState([]);
+  const [results, setResults] = useState({ exactResults: [], semanticResults: [], search: "" });
   const [loading, setLoading] = useState(true);
   const { showToast } = useToast();
 
@@ -12,7 +12,7 @@ const EventsPage = () => {
     async function fetchData() {
       try {
         const result = await api.get("/events/");
-        setEvents(result.data.events);
+        setResults({ exactResults: result.data.exactResults, semanticResults: result.data.semanticResults, search: "" });
       } catch (error) {
         showToast("error", error.response?.data?.message ?? "Failed to load events");
       } finally {
@@ -22,7 +22,7 @@ const EventsPage = () => {
     fetchData();
   }, []);
 
-  return <EventsView events={events} loading={loading} setEvents={setEvents} setLoading={setLoading} />;
+  return <EventsView results={results} loading={loading} setResults={setResults} setLoading={setLoading} />;
 };
 
 export default EventsPage;
