@@ -108,6 +108,22 @@ async function getEvents(searchString) {
     })
 }
 
+async function getRelatedEvents(embedding) {
+    const vector = JSON.stringify(embedding)
+    const minimumSimilarity = 0.65
+
+    return prisma.$queryRaw`
+        SELECT "publicId", "title", "venue", "thumbnailUrl",
+               "startsAt", "endsAt"
+        FROM "Event"
+        WHERE "startsAt" >= ${new Date()}
+          AND "embedding" IS NOT NULL
+          AND 1 - ("embedding" <=> ${vector}::vector) >= ${minimumSimilarity}
+        ORDER BY "embedding" <=> ${vector}::vector
+        LIMIT 10
+    `
+}
+
 async function findEventByPublicId(publicId) {
     return prisma.event.findUnique({
         where: {
@@ -156,6 +172,7 @@ module.exports = {
     createEvent,
     updateEvent,
     getEvents,
+    getRelatedEvents,
     findEventByPublicId,
     findByPublicId,
     findByPublicIdAndCreatorId

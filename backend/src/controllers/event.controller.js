@@ -51,8 +51,8 @@ async function updateEvent(req, res) {
 
 async function getEvents(req, res) {
     try {
-        const events = await eventService.getEvents((req.query.search || '').trim())
-        return res.status(200).json({ success: true, events })
+        const { exactResults, semanticResults } = await eventService.getEvents((req.query.search || '').trim())
+        return res.status(200).json({ success: true, exactResults, semanticResults })
     } catch (err) {
         return res.status(500).json({ success: false, message: 'Failed to fetch events' })
     }

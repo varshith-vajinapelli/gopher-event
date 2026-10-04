@@ -15,8 +15,46 @@ async function updateEvent(eventData) {
 };
 
 async function getEvents(searchString) {
-    return eventRepo.getEvents(searchString)
+    if (!searchString) {
+        const exactResults = await eventRepo.getEvents('')
+        return { exactResults, semanticResults: [] }
+    }
+
+    const [exactResults, semanticResults] = await Promise.all([
+        eventRepo.getEvents(searchString),
+        getSemanticResults(searchString)
+    ])
+
+    const exactIds = new Set(
+        exactResults.map((event) => event.publicId)
+    )
+
+    const relatedEvents = semanticResults.filter(
+        (event) => !exactIds.has(event.publicId)
+    )
+
+    return { exactResults, semanticResults: relatedEvents }
 }
+
+async function getSemanticResults(searchString) {
+    let embedding
+
+    try {
+        embedding = await getSearchEmbedding(searchString)
+    } catch (error) {
+        console.error('Gemini search failed', error)
+        return []
+    }
+
+    const events = await eventRepo.getRelatedEvents(embedding)
+    return events
+}
+
+
+async function getSearchEmbedding(searchString) {
+    return generateEmbedding(searchString, 'RETRIEVAL_QUERY')
+}
+
 
 async function getEventByPublicId(publicId) {
     return eventRepo.findEventByPublicId(publicId)
@@ -108,6 +146,8 @@ module.exports = {
     createEvent,
     updateEvent,
     getEvents,
+    getSearchEmbedding,
+    getSemanticResults,
     getEventByPublicId,
     registerUserForEvent,
 }
