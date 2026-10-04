@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const userRepo = require('../repositories/user.repo');
 
 function authMiddleware(req, res, next) {
     const authHeader = req.headers.authorization;
