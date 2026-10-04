@@ -1,6 +1,13 @@
 # Gopher Event
 
-Gopher Event is a campus event platform for finding events, creating events, and registering to attend them.
+Gopher Event is a campus event platform for finding, creating, and registering for events, specifically built for the University of Minnesota.
+
+
+# Hero Features
+1. Semantic Search: Search understands the user's intent without requiring exact keyword matches. It uses vector embeddings to find and return events that are most relevant to the user's query.
+2. QR Code Check-In: Registered users receive a QR code for event check-in. Event organizers can scan these QR codes to quickly verify and check attendees into the event.
+
+# Project Structure
 
 The project has two apps:
 
