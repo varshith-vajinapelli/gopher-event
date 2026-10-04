@@ -23,4 +23,4 @@ async function generateEmbedding(text, taskType) {
 
 }
 
-module.exports = { ai };
+module.exports = { generateEmbedding };

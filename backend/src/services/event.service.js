@@ -1,9 +1,13 @@
 const eventRepo = require('../repositories/event.repo')
 const userEventRepo = require('../repositories/userEvent.repo')
 const { generateQrToken } = require("../utils/qr.utils")
+const { generateEmbedding } = require('../utils/embedding')
 
 async function createEvent(eventData) {
-    return eventRepo.createEvent(eventData)
+    const text = `Title: ${eventData.title} Description: ${eventData.description} Venue: ${eventData.venue}`
+    const embedding = await generateEmbedding(text, "RETRIEVAL_DOCUMENT")
+
+    return eventRepo.createEvent(eventData, embedding)
 };
 
 async function updateEvent(eventData) {

@@ -1,8 +1,8 @@
 const prisma = require('../prisma/client')
 
 
-async function createEvent(eventData) {
-    return prisma.event.create({
+async function createEvent(eventData, embedding) {
+    const event = await prisma.event.create({
         data: {
             title: eventData.title,
             description: eventData.description,
@@ -15,6 +15,7 @@ async function createEvent(eventData) {
             creatorId: eventData.creatorId
         },
         select: {
+            id: true,
             publicId: true,
             title: true,
             description: true,
@@ -31,6 +32,15 @@ async function createEvent(eventData) {
             }
         }
     })
+
+    await prisma.$executeRaw`
+        UPDATE "Event"
+        SET "embedding" = ${JSON.stringify(embedding)}::vector
+        WHERE "id" = ${event.id}
+    `
+
+    const { id, ...eventDetails } = event
+    return eventDetails
 }
 async function updateEvent(eventData) {
     const event = await findByPublicIdAndCreatorId(eventData.publicId, eventData.creatorId)
