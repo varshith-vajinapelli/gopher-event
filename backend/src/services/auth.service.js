@@ -59,7 +59,8 @@ async function login(userData) {
 
     const accessToken = utils.generateAccessToken({
         userId: user.id,
-        email: user.email
+        email: user.email,
+        isOrganizer: user.isOrganizer
     })
 
 
@@ -141,7 +142,8 @@ async function verifyUserOtp({ email, otpCode }) {
 
     const accessToken = utils.generateAccessToken({
         userId: user.id,
-        email: user.email
+        email: user.email,
+        isOrganizer: user.isOrganizer
     })
 
     return {
