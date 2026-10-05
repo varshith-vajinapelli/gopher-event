@@ -110,7 +110,7 @@ async function getEvents(searchString) {
 
 async function getRelatedEvents(embedding) {
     const vector = JSON.stringify(embedding)
-    const minimumSimilarity = 0.65
+    const minimumSimilarity = 0.6
 
     return prisma.$queryRaw`
         SELECT "publicId", "title", "venue", "thumbnailUrl",
