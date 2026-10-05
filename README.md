@@ -1,30 +1,51 @@
 # Gopher Event
 
-A campus event platform for finding, creating, and registering for events, built specifically for the University of Minnesota.
+A campus event platform for finding, creating, and registering for events, built for the University of Minnesota.
 
-[![Live Site](https://img.shields.io/badge/Live_Site-gopherevent.com-7A0019?style=for-the-badge)](https://gopherevent.com)
+[![Try it live](https://img.shields.io/badge/Try_it_live-gopherevent.com-FFCC33?style=for-the-badge&labelColor=7A0019)](https://gopherevent.com)
 
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=nodedotjs&logoColor=white) ![Express](https://img.shields.io/badge/Express-000000?style=flat&logo=express&logoColor=white) ![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white) ![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=flat&logo=prisma&logoColor=white) ![Tailwind](https://img.shields.io/badge/Tailwind-06B6D4?style=flat&logo=tailwindcss&logoColor=white)
 
-Deployed on AWS EC2 + Cloudflare. Semantic search is powered by pgvector.
-
 ## Demo
 
-https://github.com/user-attachments/assets/844337b0-0878-42d3-b45e-ad50402dce70
+https://github.com/user-attachments/assets/95a2cb8d-627c-47a8-ad37-3b542fbda39b
 
-Semantic search finds events by meaning, not keywords. Searching "relax and unwind" surfaces a yoga event even though no words in the title match.
+Searching "relax and unwind" surfaces a yoga event even though no words in the title match.
 
 ## Features
 
-- **Semantic Search:** understands the user's intent without exact keyword matches, using vector embeddings (pgvector) to return the most relevant events.
-- JWT authentication
-- Event creation and management
-- RSVP system
-- Email notifications via Resend
+**Search**
+- Semantic search finds events by meaning, using Gemini embeddings and pgvector cosine similarity.
+- Title matching runs alongside it, and results are shown in separate sections without duplicates.
+- If embedding generation fails, title matches still come back.
 
-## Roadmap
+**Events**
+- Browse upcoming events in chronological order without signing in.
+- Shareable event pages with venue, times, organizer, images, and registration status (open, almost full, full).
+- Organizer accounts can create events with descriptions, schedules, capacity, and images.
 
-- **QR Code Check-In (in progress):** Registered users receive a QR code for event check-in, and organizers can scan it to verify and check attendees in.
+**Accounts**
+- Sign up with an @umn.edu email, verified by a six-digit emailed code.
+- Passwords hashed with bcrypt, sessions handled with expiring JWT access tokens.
+- Event creation is restricted to organizer accounts on the backend.
+
+**RSVPs**
+- Register for upcoming events, with checks for duplicates, started events, and capacity.
+- Registration and the RSVP count update happen in one atomic database write.
+- Each registration gets a unique six-character token.
+
+**Emails (Resend)**
+- Verification codes, welcome emails, event-created confirmations, and RSVP confirmations.
+
+**In progress:** QR code check-in.
+
+## Architecture
+
+- **Backend:** Express API organized into routes, controllers, services, and repositories. A request flows `Route → Middleware → Controller → Service → Repository → Prisma → PostgreSQL`.
+- **Validation and auth:** Zod schemas validate request payloads, and middleware enforces JWT authentication and organizer-only access.
+- **Data:** Prisma manages PostgreSQL access, with pgvector queries for semantic event search.
+- **Frontend:** React and Vite app organized into pages and reusable components, with a shared Axios client that handles the API base URL and bearer-token interceptors.
+- **App setup:** `app.js` builds the Express app and `server.js` connects the database and starts the server, which keeps the app testable.
 
 ## Run Locally
 
@@ -38,9 +59,9 @@ cd ../frontend
 npm install
 ```
 
-Create `backend/.env` with `DATABASE_URL`, `JWT_SECRET`, and `RESEND_API_KEY`. Create `frontend/.env.development` with `VITE_API_URL=http://localhost:5000`.
+Create `backend/.env` with `DATABASE_URL`, `JWT_SECRET`, `RESEND_API_KEY`, and your Gemini API key. Create `frontend/.env.development` with `VITE_API_URL=http://localhost:5000`.
 
-Set up the database, then start the backend:
+Enable the pgvector extension in your database (`CREATE EXTENSION vector;`), then set up the database and start the backend:
 
 ```bash
 cd backend
@@ -55,7 +76,7 @@ cd frontend
 npm run dev
 ```
 
-The frontend (`frontend/`) runs on `http://localhost:5173` and the API (`backend/`) runs on `http://localhost:5000`.
+The frontend runs on `http://localhost:5173` and the API on `http://localhost:5000`.
 
 ## Docs
 
